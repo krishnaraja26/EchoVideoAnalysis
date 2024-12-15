@@ -1,0 +1,262 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Body Styling */
+body {
+    background: linear-gradient(to right, #2C3E50, #34495E); /* Dark background */
+    color: #fff;
+    line-height: 1.6;
+    padding-top: 60px; /* to accommodate the fixed nav */
+    display: flex;
+}
+
+/* Navigation Bar (Sidebar) */
+#sidebar {
+    background: rgba(44, 52, 61, 0.85); /* Dark Gray with slight transparency */
+    color: white;
+    padding: 15px 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: fixed;
+    top: 0;
+    left: -250px; /* Hidden off-screen by default */
+    width: 250px; /* Default width */
+    height: 100%;
+    z-index: 1000;
+    backdrop-filter: blur(8px); /* Glassmorphism */
+    transition: left 0.3s ease; /* Smooth transition for sliding in/out */
+}
+
+.nav-container {
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+/* Logo Styling */
+.logo {
+    font-size: 1.7rem;
+    font-weight: bold;
+    color: #F39C12; /* Muted Gold */
+    text-align: left;
+    margin-top: 20px; /* Adds space above the logo */
+    margin-bottom: 15px; /* Space between logo and navigation items */
+    margin-left: 20px; /* Add margin to the left */
+    border-bottom: 2px solid #16A085; /* Add a line below the logo */
+    padding-bottom: 10px; /* Optional: to give space between the text and the line */
+}
+
+/* Ensure logo remains visible and aligned during the sidebar toggle */
+#sidebar.show .logo {
+    transform: translateX(0); /* Keep the logo in its position */
+    opacity: 1; /* Make sure logo stays visible */
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column; /* Stack the links vertically */
+    gap: 15px;
+    width: 100%;
+    text-align: center;
+}
+
+.nav-links li a {
+    color: white;
+    text-decoration: none;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background 0.3s ease;
+    display: block;
+}
+
+.nav-links li a:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.nav-links li a.active {
+    background: rgba(113, 79, 79, 0.3); /* Highlight in nav bar */
+    border: 2px solid #16A085; /* Add border to indicate active link */
+    color: #16A085; /* Change text color */
+}
+
+/* Main Content */
+main {
+    padding: 40px 20px;
+    margin-left: 270px; /* Adjust for the sidebar width */
+    max-width: 1200px;
+    margin: 0 auto;
+    flex-grow: 1;
+}
+
+/* Section Spacing with Hover Effects */
+main section {
+    margin-bottom: 40px; /* Adds space between sections */
+    padding: 20px; /* Optional: Adds internal padding for content */
+    background: rgba(255, 255, 255, 0.1); /* Slight transparency for sections */
+    border-radius: 8px; /* Rounded corners for a clean look */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for elevation */
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+
+main section:hover {
+    transform: scale(1.02); /* Slightly enlarge the section */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Stronger shadow effect */
+    background: rgba(255, 255, 255, 0.01); /* Lighter transparency for hover */
+}
+
+main section:target {
+    animation: highlight 1.5s ease;
+}
+
+@keyframes highlight {
+    0% {
+        background: rgba(255, 255, 255, 0.4);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+    100% {
+        background: rgba(255, 255, 255, 0.1);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+}
+
+/* Section Headings */
+h2 {
+    color: #16A085; /* Deep Teal */
+    margin-bottom: 20px;
+    font-size: 2rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Table Styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 30px 0;
+}
+
+table th, table td {
+    border: 1px solid #2C3E50;
+    padding: 15px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.15); /* Glassmorphism effect */
+    backdrop-filter: blur(10px);
+}
+
+table th {
+    background-color: #2980B9; /* Dark Teal */
+    color: white;
+}
+
+table tr:nth-child(even) {
+    background-color: rgba(52, 152, 219, 0.1);
+}
+
+table tr:hover {
+    background-color: rgba(52, 152, 219, 0.3);
+    transform: scale(1.02);
+    transition: all 0.3s ease;
+}
+
+/* Hover Effects for Upload Section */
+#video-upload {
+    background: rgba(44, 52, 61, 0.25); /* Darker background with transparency */
+    backdrop-filter: blur(12px);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    margin-top: 30px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#video-upload:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+form input[type="file"] {
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+form input[type="file"]:hover {
+    background: rgba(255, 255, 255, 0.4);
+    transform: scale(1.03);
+}
+
+form button {
+    background: #2980B9; /* Dark Teal */
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+form button:hover {
+    background: #1abc9c; /* Slightly lighter teal */
+    transform: scale(1.05);
+}
+
+/* Loading Animation */
+#loading {
+    font-size: 1.5rem;
+    color: #E67E22; /* Deep Amber */
+    display: none;
+}
+
+/* Prediction Results */
+#prediction-results {
+    margin-top: 30px;
+}
+
+#prediction-results h3 {
+    color: #16A085; /* Deep Teal */
+    text-align: center;
+}
+
+#prediction-results p {
+    font-size: 1.2rem;
+    text-align: center;
+    color: #BDC3C7;
+}
+
+/* Toggle Button */
+#toggle-sidebar {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background-color: #2980B9;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    z-index: 1100; /* Make sure the button is above other content */
+    transition: background 0.3s ease;
+}
+
+#toggle-sidebar:hover {
+    background-color: #1abc9c; /* Lighter shade on hover */
+}
