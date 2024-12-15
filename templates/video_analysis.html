@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESV/EDV Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='video_analysis.css') }}">
+    <!-- Add FontAwesome for the upload icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="nav-container">
+            <h1 class="logo">Heart Health</h1>
+            <ul class="nav-links">
+                <li><a href="/heart-details">Heart Health Details</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Video Upload Section -->
+        <section id="video-upload">
+            <h2>ESV/EDV Prediction using Video Frames</h2>
+            <form action="/video_analysis" method="POST" enctype="multipart/form-data">
+                <label for="video_folder">
+                    <!-- Upload Icon -->
+                    <i class="fas fa-cloud-upload-alt"></i> 
+                    Upload Video Frames Folder:
+                </label>
+                <input type="file" id="video_folder" name="video_folder" webkitdirectory directory multiple required>
+                <button type="submit" class="submit-btn">Upload & Analyze</button>
+            </form>
+
+            <!-- Loading State -->
+            <div id="loading" style="display:none;">Processing...</div>
+
+            <!-- Prediction Results -->
+            <div id="prediction-results">
+                <h3>Prediction Results:</h3>
+                <p id="esv">ESV: </p>
+                <p id="edv">EDV: </p>
+                <p id="ef">LVEF: </p>
+            </div>
+        </section>
+
+        <!-- EF Prediction Graph -->
+        <section id="ef-chart-container" style="display:none;">
+            <h2>Predicted LVEF Range</h2>
+            <div id="chart-container">
+                <canvas id="ef-chart"></canvas>
+            </div>
+            <p id="message" class="message"></p>
+        </section>
+    </main>
+
+    <script>
+        const form = document.querySelector("form");
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+
+            // Show loading message
+            document.getElementById("loading").style.display = "block";
+
+            const response = await fetch("/video_analysis", {
+                method: "POST",
+                body: formData,
+            });
+
+            const result = await response.json();
+
+            // Hide loading message
+            document.getElementById("loading").style.display = "none";
+
+            if (result.error) {
+                alert(result.error);
+            } else {
+                // Display the prediction results
+                document.getElementById("esv").innerText = "ESV: " + result.ESV;
+                document.getElementById("edv").innerText = "EDV: " + result.EDV;
+
+                // Calculate LVEF if not provided directly
+                const LVEF = ((result.EDV - result.ESV) / result.EDV) * 100;
+                document.getElementById("ef").innerText = "LVEF: " + LVEF.toFixed(2);
+
+                // Check if LVEF is valid and show chart
+                if (LVEF !== undefined && LVEF !== null) {
+                    document.getElementById("ef-chart-container").style.display = "block"; // Show chart container
+                    displayEFGraph(LVEF, result.gender);
+                } else {
+                    document.getElementById("ef").innerText = "LVEF: Data not available.";
+                    document.getElementById("ef-chart-container").style.display = "none"; // Hide chart container
+                }
+            }
+        };
+
+        const displayEFGraph = (predictedLVEF, gender) => {
+            const menRanges = {
+                normal: [52, 72],
+                mildlyAbnormal: [41, 51],
+                moderatelyAbnormal: [30, 40],
+                severelyAbnormal: [0, 29],
+            };
+
+            const womenRanges = {
+                normal: [54, 74],
+                mildlyAbnormal: [41, 53],
+                moderatelyAbnormal: [30, 40],
+                severelyAbnormal: [0, 29],
+            };
+
+            const ranges = gender === 'Men' ? menRanges : womenRanges;
+
+            const getRangeColor = (value) => {
+                if (value >= ranges.normal[0] && value <= ranges.normal[1]) {
+                    return 'green'; // Normal
+                } else if (value >= ranges.mildlyAbnormal[0] && value <= ranges.mildlyAbnormal[1]) {
+                    return 'yellow'; // Mildly Abnormal
+                } else if (value >= ranges.moderatelyAbnormal[0] && value <= ranges.moderatelyAbnormal[1]) {
+                    return 'orange'; // Moderately Abnormal
+                } else {
+                    return 'red'; // Severely Abnormal
+                }
+            };
+
+            const ctx = document.getElementById('ef-chart').getContext('2d');
+
+            const data = {
+                labels: ['LVEF Prediction'],
+                datasets: [{
+                    label: 'Predicted LVEF (%)',
+                    data: [predictedLVEF],
+                    backgroundColor: getRangeColor(predictedLVEF),
+                    borderColor: getRangeColor(predictedLVEF),
+                    borderWidth: 1,
+                }],
+            };
+
+            const options = {
+                responsive: true,
+                scales: {
+                    y: {
+                        min: 0,
+                        max: 100,
+                        ticks: {
+                            stepSize: 10,
+                        },
+                    },
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function (tooltipItem) {
+                                return `LVEF: ${tooltipItem.raw}%`;
+                            },
+                        },
+                    },
+                },
+            };
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: data,
+                options: options,
+            });
+
+            // Displaying message to indicate the user's LVEF category
+            const message = document.getElementById('message');
+            if (predictedLVEF >= ranges.normal[0] && predictedLVEF <= ranges.normal[1]) {
+                message.textContent = `Your predicted LVEF falls within the Normal range for ${gender}.`;
+            } else if (predictedLVEF >= ranges.mildlyAbnormal[0] && predictedLVEF <= ranges.mildlyAbnormal[1]) {
+                message.textContent = `Your predicted LVEF falls within the Mildly Abnormal range for ${gender}.`;
+            } else if (predictedLVEF >= ranges.moderatelyAbnormal[0] && predictedLVEF <= ranges.moderatelyAbnormal[1]) {
+                message.textContent = `Your predicted LVEF falls within the Moderately Abnormal range for ${gender}.`;
+            } else {
+                message.textContent = `Your predicted LVEF falls within the Severely Abnormal range for ${gender}.`;
+            }
+        };
+    </script>
+</body>
+</html>
