@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart Health and ESV/EDV Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style2.css') }}">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="nav-container">
+            <h1 class="logo">Heart Health</h1>
+            <ul class="nav-links">
+                <li><a href="#video-upload">ESV/EDV Prediction</a></li>
+                <li><a href="#ejection-fraction">Ejection Fraction</a></li>
+                <li><a href="#types-heart-failure">Types of Heart Failure</a></li>
+                <li><a href="#causes-reduced-ef">Causes of Reduced EF</a></li>
+                <li><a href="#causes-high-ef">Causes of High EF</a></li>
+                <li><a href="#treatment">Treatment Options</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Video Upload Section -->
+        <section id="video-upload">
+            <h2>ESV/EDV Prediction using Video Frames</h2>
+            <form action="/video_analysis" method="POST" enctype="multipart/form-data">
+                <label for="video_folder">Upload Video Frames Folder:</label>
+                <input type="file" id="video_folder" name="video_folder" webkitdirectory directory multiple required>
+                <button type="submit">Upload & Analyze</button>
+            </form>
+
+            <!-- Loading State -->
+            <div id="loading" style="display:none;">Processing...</div>
+
+            <!-- Prediction Results -->
+            <div id="prediction-results">
+                <h3>Prediction Results:</h3>
+                <p id="esv">ESV: </p>
+                <p id="edv">EDV: </p>
+                <p id="ef">LVEF: </p>
+            </div>
+        </section>
+
+        <!-- Ejection Fraction -->
+        <section id="ejection-fraction">
+            <h2>Ejection Fraction Results</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>LVEF Range</th>
+                        <th>Men</th>
+                        <th>Women</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Normal range</td>
+                        <td>52–72%</td>
+                        <td>54–74%</td>
+                    </tr>
+                    <tr>
+                        <td>Mildly abnormal range</td>
+                        <td>41–51%</td>
+                        <td>41–53%</td>
+                    </tr>
+                    <tr>
+                        <td>Moderately abnormal range</td>
+                        <td>30–40%</td>
+                        <td>30–40%</td>
+                    </tr>
+                    <tr>
+                        <td>Severely abnormal range</td>
+                        <td>less than 30%</td>
+                        <td>less than 30%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Types of Heart Failure -->
+        <section id="types-heart-failure">
+            <h2>Types of Heart Failure</h2>
+            <article>
+                <h3>Heart Failure with Reduced Left Ventricular Function (HFrEF)</h3>
+                <p>An ejection fraction below 40% is classified as HFrEF. This occurs when one of your heart’s chambers cannot contract properly. Symptoms include:</p>
+                <ul>
+                    <li>Shortness of breath</li>
+                    <li>Exhaustion</li>
+                    <li>Heart palpitations</li>
+                    <li>Dizziness, confusion, lightheadedness</li>
+                    <li>Swelling in ankles, legs, or abdomen</li>
+                    <li>Exercise intolerance</li>
+                </ul>
+            </article>
+            <article>
+                <h3>Heart Failure with Preserved Left Ventricular Function (HFpEF)</h3>
+                <p>HFpEF occurs when the left ventricle doesn't relax properly despite a normal ejection fraction. This may be due to a thickened or stiffened heart muscle. Symptoms include:</p>
+                <ul>
+                    <li>Fatigue</li>
+                    <li>Shortness of breath during exercise</li>
+                </ul>
+            </article>
+        </section>
+
+        <!-- Causes of Reduced EF -->
+        <section id="causes-reduced-ef">
+            <h2>Causes of Reduced Ejection Fraction</h2>
+            <ul>
+                <li><strong>Cardiomyopathy:</strong> Weakening or thickening of the heart muscle, affecting its ability to pump blood properly.</li>
+                <li><strong>Heart attack and coronary artery disease:</strong> Blockages or narrowing in arteries can damage the heart muscle.</li>
+                <li><strong>Heart valve disease:</strong> Improper opening or closing of heart valves disrupts blood flow.</li>
+            </ul>
+        </section>
+
+        <!-- Causes of High EF -->
+        <section id="causes-high-ef">
+            <h2>Causes of High Ejection Fraction</h2>
+            <p>A high ejection fraction may indicate hypertrophic cardiomyopathy, a genetic condition where the heart muscle thickens abnormally. This can lead to serious arrhythmias if untreated.</p>
+        </section>
+
+        <!-- Treatment Options -->
+        <section id="treatment">
+            <h2>Treatment Options for Abnormal Ejection Fraction</h2>
+            <ul>
+                <li>ACE inhibitors, ARBs, or beta-blockers to slow heart disease progression.</li>
+                <li>Diuretics to reduce fluid buildup causing swelling or shortness of breath.</li>
+                <li>Eplerenone or spironolactone to decrease heart stiffness.</li>
+                <li>ARNI for reducing blood pressure and strain on the heart.</li>
+                <li>SGLT2 inhibitors for type 2 diabetes patients to reduce heart failure risk.</li>
+                <li>Biventricular pacemakers to synchronize heart contractions.</li>
+                <li>Implantable cardiac defibrillators to regulate heartbeat.</li>
+            </ul>
+        </section>
+    </main>
+
+    <script>
+        const form = document.querySelector("form");
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+
+            // Show loading message
+            document.getElementById("loading").style.display = "block";
+
+            const response = await fetch("/video_analysis", {
+                method: "POST",
+                body: formData,
+            });
+
+            const result = await response.json();
+
+            // Hide loading message
+            document.getElementById("loading").style.display = "none";
+
+            if (result.error) {
+                alert(result.error);
+            } else {
+                document.getElementById("esv").innerText = "ESV: " + result.ESV;
+                document.getElementById("edv").innerText = "EDV: " + result.EDV;
+                document.getElementById("ef").innerText = "LVEF: " + result.EF;
+            }
+        };
+    </script>
+</body>
+</html>
