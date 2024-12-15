@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart Health Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='heart_details.css') }}">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav id="sidebar">
+        <div class="nav-container">
+            <h1 class="logo">Heart Health</h1>
+            <ul class="nav-links">
+                <li><a href="/video-analysis">ESV/EDV Prediction</a></li>
+                <li><a href="#ejection-fraction">Ejection Fraction Results</a></li>
+                <li><a href="#types-heart-failure">Types of Heart Failure</a></li>
+                <li><a href="#causes-reduced-ef">Causes of Reduced EF</a></li>
+                <li><a href="#causes-high-ef">Causes of High EF</a></li>
+                <li><a href="#treatment">Treatment Options</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Ejection Fraction -->
+        <section id="ejection-fraction">
+            <h2>Ejection Fraction Results</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>LVEF Range</th>
+                        <th>Men</th>
+                        <th>Women</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Normal range</td>
+                        <td>52–72%</td>
+                        <td>54–74%</td>
+                    </tr>
+                    <tr>
+                        <td>Mildly abnormal range</td>
+                        <td>41–51%</td>
+                        <td>41–53%</td>
+                    </tr>
+                    <tr>
+                        <td>Moderately abnormal range</td>
+                        <td>30–40%</td>
+                        <td>30–40%</td>
+                    </tr>
+                    <tr>
+                        <td>Severely abnormal range</td>
+                        <td>less than 30%</td>
+                        <td>less than 30%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Types of Heart Failure -->
+        <section id="types-heart-failure">
+            <h2>Types of Heart Failure</h2>
+            <article>
+                <h3>Heart Failure with Reduced Left Ventricular Function (HFrEF)</h3>
+                <p>An ejection fraction below 40% is classified as HFrEF. This occurs when one of your heart’s chambers cannot contract properly. Symptoms include:</p>
+                <p>- Shortness of breath</p>
+                <p>- Exhaustion</p>
+                <p>- Heart palpitations</p>
+                <p>- Dizziness, confusion, lightheadedness</p>
+                <p>- Swelling in ankles, legs, or abdomen</p>
+                <p>- Exercise intolerance</p>
+            </article>
+            <article>
+                <h3>Heart Failure with Preserved Left Ventricular Function (HFpEF)</h3>
+                <p>HFpEF occurs when the left ventricle doesn't relax properly despite a normal ejection fraction. This may be due to a thickened or stiffened heart muscle. Symptoms include:</p>
+                <p>- Fatigue</p>
+                <p>- Shortness of breath during exercise</p>
+            </article>
+        </section>
+
+        <!-- Causes of Reduced EF -->
+        <section id="causes-reduced-ef">
+            <h2>Causes of Reduced Ejection Fraction</h2>
+            <p><strong>Cardiomyopathy:</strong> Weakening or thickening of the heart muscle, affecting its ability to pump blood properly.</p>
+            <p><strong>Heart attack and coronary artery disease:</strong> Blockages or narrowing in arteries can damage the heart muscle.</p>
+            <p><strong>Heart valve disease:</strong> Improper opening or closing of heart valves disrupts blood flow.</p>
+        </section>
+
+        <!-- Causes of High EF -->
+        <section id="causes-high-ef">
+            <h2>Causes of High Ejection Fraction</h2>
+            <p>A high ejection fraction may indicate hypertrophic cardiomyopathy, a genetic condition where the heart muscle thickens abnormally. This can lead to serious arrhythmias if untreated.</p>
+        </section>
+
+        <!-- Treatment Options -->
+        <section id="treatment">
+            <h2>Treatment Options for Abnormal Ejection Fraction</h2>
+            <p>- ACE inhibitors, ARBs, or beta-blockers to slow heart disease progression.</p>
+            <p>- Diuretics to reduce fluid buildup causing swelling or shortness of breath.</p>
+            <p>- Eplerenone or spironolactone to decrease heart stiffness.</p>
+            <p>- ARNI for reducing blood pressure and strain on the heart.</p>
+            <p>- SGLT2 inhibitors for type 2 diabetes patients to reduce heart failure risk.</p>
+            <p>- Biventricular pacemakers to synchronize heart contractions.</p>
+            <p>- Implantable cardiac defibrillators to regulate heartbeat.</p>
+        </section>
+    </main>
+
+    <!-- Toggle Sidebar Button -->
+    <button id="toggle-sidebar">&#9776;</button>
+
+    <!-- Include JavaScript -->
+    <script src="script.js"></script>
+
+    <script>
+        const toggleButton = document.getElementById('toggle-sidebar');
+        const sidebar = document.getElementById('sidebar');
+
+        toggleButton.addEventListener('click', () => {
+            // Toggle the sidebar
+            if (sidebar.style.left === '0px') {
+                sidebar.style.left = '-250px'; // Hide it off-screen
+            } else {
+                sidebar.style.left = '0'; // Show it
+            }
+        });
+    </script>
+</body>
+</html>
